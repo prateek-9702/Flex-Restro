@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  restaurant-service:
+    build: .
+    ports:
+      - "3001:3000"
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=restaurant_db
+      - JWT_SECRET=your-secret-key
+    depends_on:
+      - postgres
+    networks:
+      - restaurant-network
+
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=restaurant_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - restaurant-network
+
+volumes:
+  postgres_data:
+
+networks:
+  restaurant-network:
+    driver: bridge

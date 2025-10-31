@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  payment-service:
+    build: .
+    ports:
+      - "3005:3000"
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=flexrestro
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=payment_service
+      - STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+      - STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - flexrestro
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=flexrestro
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=payment_service
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flexrestro
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5674:5672"
+      - "15674:15672"
+    networks:
+      - flexrestro
+
+volumes:
+  postgres_data:
+
+networks:
+  flexrestro:
+    driver: bridge

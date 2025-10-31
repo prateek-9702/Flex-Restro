@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  menu-service:
+    build: .
+    ports:
+      - "3004:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=flexrestro
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=flexrestro_menu
+      - JWT_SECRET=your-secret-key
+      - AWS_S3_BUCKET=flexrestro-menu-images
+      - AWS_ACCESS_KEY_ID=your-access-key
+      - AWS_SECRET_ACCESS_KEY=your-secret-key
+      - AWS_REGION=us-east-1
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - flexrestro
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=flexrestro
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=flexrestro_menu
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flexrestro
+
+volumes:
+  postgres_data:
+
+networks:
+  flexrestro:
+    driver: bridge

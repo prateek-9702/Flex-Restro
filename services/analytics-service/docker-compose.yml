@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  analytics-service:
+    build: .
+    ports:
+      - "3006:3000"
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=flexrestro
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=analytics_service
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    networks:
+      - flexrestro
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=flexrestro
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=analytics_service
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flexrestro
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - flexrestro
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5675:5672"
+      - "15675:15672"
+    networks:
+      - flexrestro
+
+volumes:
+  postgres_data:
+
+networks:
+  flexrestro:
+    driver: bridge
