@@ -14,10 +14,16 @@ export class AnalyticsService {
     @InjectRepository(AnalyticsCache)
     private cacheRepository: Repository<AnalyticsCache>,
   ) {
-    this.redis = new Redis({
-      host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT || '6379'),
-    });
+    // Only connect to Redis if not in test environment
+    if (process.env.NODE_ENV !== 'test') {
+      this.redis = new Redis({
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        lazyConnect: true, // Don't connect immediately
+        maxRetriesPerRequest: 3,
+        connectTimeout: 5000,
+      });
+    }
   }
 
   async getRevenueMetrics(tenantId: string, period: PeriodType = PeriodType.MONTHLY): Promise<any> {

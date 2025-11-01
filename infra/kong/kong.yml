@@ -1,0 +1,106 @@
+_format_version: "3.0"
+
+services:
+  - name: auth-service
+    url: http://auth-service:3000
+    routes:
+      - name: auth-routes
+        paths:
+          - /auth
+        strip_path: true
+
+  - name: restaurant-service
+    url: http://restaurant-service:3000
+    routes:
+      - name: restaurant-routes
+        paths:
+          - /restaurants
+        strip_path: true
+
+  - name: menu-service
+    url: http://menu-service:3000
+    routes:
+      - name: menu-routes
+        paths:
+          - /menus
+        strip_path: true
+
+  - name: order-service
+    url: http://order-service:3000
+    routes:
+      - name: order-routes
+        paths:
+          - /orders
+        strip_path: true
+
+  - name: payment-service
+    url: http://payment-service:3000
+    routes:
+      - name: payment-routes
+        paths:
+          - /payments
+        strip_path: true
+
+  - name: analytics-service
+    url: http://analytics-service:3000
+    routes:
+      - name: analytics-routes
+        paths:
+          - /analytics
+        strip_path: true
+
+  - name: qr-service
+    url: http://qr-service:3000
+    routes:
+      - name: qr-routes
+        paths:
+          - /qr
+        strip_path: true
+
+  - name: notification-service
+    url: http://notification-service:3000
+    routes:
+      - name: notification-routes
+        paths:
+          - /notifications
+        strip_path: true
+
+  - name: connector-service
+    url: http://connector-service:3000
+    routes:
+      - name: connector-routes
+        paths:
+          - /connectors
+        strip_path: true
+
+  - name: admin-service
+    url: http://admin-service:3000
+    routes:
+      - name: admin-routes
+        paths:
+          - /admin
+        strip_path: true
+
+  - name: web-app
+    url: http://web-app:3000
+    routes:
+      - name: web-app-routes
+        paths:
+          - /
+        strip_path: false
+
+  - name: admin-panel
+    url: http://admin-panel:3000
+    routes:
+      - name: admin-panel-routes
+        paths:
+          - /admin-panel
+        strip_path: true
+
+  - name: qr-page
+    url: http://qr-page:3000
+    routes:
+      - name: qr-page-routes
+        paths:
+          - /qr-page
+        strip_path: true

@@ -1,0 +1,40 @@
+services:
+  qr-service:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=flexrestro
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=qr_service
+      - JWT_SECRET=your-secret-key
+      - AWS_ACCESS_KEY_ID=your-access-key
+      - AWS_SECRET_ACCESS_KEY=your-secret-key
+      - AWS_REGION=us-east-1
+      - S3_BUCKET_NAME=flexrestro-qr-codes
+    depends_on:
+      - postgres
+    networks:
+      - flexrestro
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=flexrestro
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=qr_service
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flexrestro
+
+volumes:
+  postgres_data:
+
+networks:
+  flexrestro:
+    driver: bridge

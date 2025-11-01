@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Logger } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // Assuming auth guard exists
+import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
 
 @Controller('restaurants')
 export class RestaurantController {
+  private readonly logger = new Logger(RestaurantController.name);
+
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Post()
@@ -34,5 +36,12 @@ export class RestaurantController {
   @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string, @Request() req) {
     return this.restaurantService.remove(id, req.user.tenantId);
+  }
+
+  @Get('welcome')
+  @UseGuards(JwtAuthGuard)
+  welcome(@Request() req) {
+    this.logger.log(`Request received: ${req.method} ${req.url}`);
+    return { message: 'Welcome to the Restaurant Service!' };
   }
 }

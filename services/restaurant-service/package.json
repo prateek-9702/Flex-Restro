@@ -38,9 +38,12 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
+    "@nestjs/testing": "^11.1.8",
     "@types/express": "^5.0.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.9.2",
     "@types/passport-jwt": "^4.0.1",
+    "jest": "^30.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
