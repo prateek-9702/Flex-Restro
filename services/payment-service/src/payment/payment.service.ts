@@ -53,11 +53,13 @@ export class PaymentService {
     }
 
     try {
-      const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+      const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId, {
+        expand: ['latest_charge'],
+      });
 
       if (paymentIntent.status === 'succeeded') {
         payment.status = PaymentStatus.SUCCEEDED;
-        payment.stripe_charge_id = paymentIntent.charges.data[0]?.id;
+        payment.stripe_charge_id = (paymentIntent.latest_charge as Stripe.Charge)?.id;
       } else if (paymentIntent.status === 'requires_payment_method') {
         payment.status = PaymentStatus.FAILED;
         payment.failure_reason = 'Payment method required';

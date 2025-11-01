@@ -1,28 +1,33 @@
-import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Request, UseGuards } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { Payment } from './payment.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('payments')
+@UseGuards(JwtAuthGuard)
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('create-intent')
   async createPaymentIntent(
-    @Body() createPaymentIntentDto: { order_id: string; amount: number; currency?: string; tenant_id: string },
+    @Body() createPaymentIntentDto: { order_id: string; amount: number; currency?: string },
+    @Request() req,
   ): Promise<Payment> {
+    const tenantId = req.user.tenant_id;
     return this.paymentService.createPaymentIntent(
       createPaymentIntentDto.order_id,
       createPaymentIntentDto.amount,
       createPaymentIntentDto.currency,
-      createPaymentIntentDto.tenant_id,
+      tenantId,
     );
   }
 
   @Post('confirm/:paymentIntentId')
   async confirmPayment(
     @Param('paymentIntentId') paymentIntentId: string,
-    @Body('tenant_id') tenantId: string,
+    @Request() req,
   ): Promise<Payment> {
+    const tenantId = req.user.tenant_id;
     return this.paymentService.confirmPayment(paymentIntentId, tenantId);
   }
 
@@ -35,18 +40,22 @@ export class PaymentController {
   @Post(':id/refund')
   async refundPayment(
     @Param('id') id: string,
-    @Body() refundDto: { tenant_id: string; amount?: number },
+    @Body() refundDto: { amount?: number },
+    @Request() req,
   ): Promise<Payment> {
-    return this.paymentService.refundPayment(id, refundDto.tenant_id, refundDto.amount);
+    const tenantId = req.user.tenant_id;
+    return this.paymentService.refundPayment(id, tenantId, refundDto.amount);
   }
 
   @Get()
-  async findAll(@Body('tenant_id') tenantId: string): Promise<Payment[]> {
+  async findAll(@Request() req): Promise<Payment[]> {
+    const tenantId = req.user.tenant_id;
     return this.paymentService.findAll(tenantId);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Body('tenant_id') tenantId: string): Promise<Payment> {
+  async findOne(@Param('id') id: string, @Request() req): Promise<Payment> {
+    const tenantId = req.user.tenant_id;
     return this.paymentService.findOne(id, tenantId);
   }
 }

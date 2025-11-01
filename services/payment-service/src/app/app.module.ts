@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PaymentModule } from '../payment/payment.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PaymentModule } from '../payment/payment.module';
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: true, // Set to false in production
     }),
+    AuthModule,
     PaymentModule,
   ],
 })
